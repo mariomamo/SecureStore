@@ -20,19 +20,19 @@ def getPrivateKey():
 
 def putPassword(name, password, cripter: Cipher):
     ciphertext = cripter.encrypt(password, public_key_path)
-    if not os.path.exists('chiavi'):
-        os.makedirs('chiavi')
+    if not os.path.exists('keys'):
+        os.makedirs('keys')
 
-    with open("./chiavi/" + name, "wb") as f:
+    with open("./keys/" + name, "wb") as f:
         f.write(ciphertext)
 
 
 def getPassword(name, cripter: Cipher):
-    if not os.path.exists('chiavi'):
-        os.makedirs('chiavi')
+    if not os.path.exists('keys'):
+        os.makedirs('keys')
 
     try:
-        with open("./chiavi/" + name, "rb") as f:
+        with open("./keys/" + name, "rb") as f:
             ciphertext = f.read()
 
         c = RSACipher(private_key_path)
