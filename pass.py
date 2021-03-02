@@ -2,9 +2,7 @@
 import argparse
 import os
 import traceback
-
 import pyperclip as pyperclip
-import yaml
 from cipher import Cipher
 
 from cipher.RSACipher import RSACipher
