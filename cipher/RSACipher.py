@@ -1,3 +1,4 @@
+import os
 import traceback
 
 from Crypto.PublicKey import RSA
@@ -6,18 +7,18 @@ from cipher import Cipher
 
 
 class RSACipher(Cipher):
-    __key = None
+    __private_key = None
+    __private_key_path = None
+    __default_private_key_path = "private_key.pem"
+    __default_public_key_path = "public_key.pem"
 
-    def __init__(self, public_key_path=None):
-        self.__public_key_path = public_key_path
-        if public_key_path:
-            try:
-                self.__key = RSA.importKey(open(public_key_path).read())
-            except Exception as ex:
-                # traceback.print_exc()
-                pass
-        else:
-            self.generateKeys()
+    def __init__(self, private_key_path=None, public_key_path=None):
+        if private_key_path is not None:
+            if os.path.exists(private_key_path):
+                self.__private_key = RSA.importKey(open(private_key_path).read())
+
+        if public_key_path is None:
+            self.__public_key_path = self.__default_public_key_path
 
     def encrypt(self, text, public_key_path):
         key = RSA.importKey(open(public_key_path).read())
@@ -26,19 +27,17 @@ class RSACipher(Cipher):
         return ciphertext
 
     def decrypt(self, ciphertext):
-        cipher = PKCS1_OAEP.new(self.__key)
+        cipher = PKCS1_OAEP.new(self.__private_key)
         message = cipher.decrypt(ciphertext)
         return message.decode()
 
     def generateKeys(self):
         key = RSA.generate(2048)
-        with open('private_key.pem', 'wb') as file:
+        with open(self.__default_private_key_path, 'wb') as file:
             file.write(key.export_key('PEM'))
 
-        with open('public_key.pem', 'wb') as file:
+        with open(self.__default_public_key_path, 'wb') as file:
             file.write(key.public_key().export_key('PEM'))
-
-        self.__key = RSA.importKey(open(self.__public_key_path).read())
 
 
 if __name__ == '__main__':
