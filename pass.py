@@ -73,7 +73,7 @@ if __name__ == '__main__':
         public_key_path = config["publicKeyPath"]
         password_dir = config["encriptedKeyPath"]
 
-        cipher = RSACipher(private_key_path)
+        cipher = RSACipher(private_key_path, public_key_path)
 
         if args.generate:
             cipher.generateKeys()
@@ -107,7 +107,7 @@ if __name__ == '__main__':
             print("Password saved!")
 
     except Exception as ex:
-        traceback.print_exc()
+        # traceback.print_exc()
         if accountName is not None:
             print(f"An error occurred.\nPassword for '{accountName}' not found.\nMake sure you've generated a key pair.")
         else:
