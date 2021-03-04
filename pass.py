@@ -59,6 +59,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    accountName = None
+
     try:
         with open('config.yml') as file:
             config = yaml.full_load(file)
@@ -94,16 +96,19 @@ if __name__ == '__main__':
             sys.exit(-1)
 
         if args.get is not None:
-            nome = args.get[0]
-            password = getPassword(nome, cipher, password_dir)
+            accountName = args.get[0]
+            password = getPassword(accountName, cipher, password_dir)
             pyperclip.copy(password)
             print(f'Password copyed to clipoard! Press ctrl+V for paste')
         elif args.put is not None:
-            nome = args.put[0]
+            accountName = args.put[0]
             password = args.put[1]
-            putPassword(nome, password, cipher, password_dir)
+            putPassword(accountName, password, cipher, password_dir)
             print("Password saved!")
 
     except Exception as ex:
-        # traceback.print_exc()
-        print(f"An error occurred.\nPassword for '{nome}' not found.\nMake sure you've generated a key pair.")
+        traceback.print_exc()
+        if accountName is not None:
+            print(f"An error occurred.\nPassword for '{accountName}' not found.\nMake sure you've generated a key pair.")
+        else:
+            print(f"An error occurred.\nMake sure you've generated a key pair.")
